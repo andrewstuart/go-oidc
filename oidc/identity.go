@@ -7,19 +7,23 @@ import (
 	"github.com/coreos/go-oidc/jose"
 )
 
+//Identity is an internal abstraction of the OpenID connect standard claims,
+//with well-known named fields for easier verification.
 type Identity struct {
 	ID        string
 	Name      string
 	Email     string
 	ExpiresAt time.Time
+	Claims    jose.Claims
 }
 
+//IdentityFromClaims returns an Identity from jose JWT Claims
 func IdentityFromClaims(claims jose.Claims) (*Identity, error) {
 	if claims == nil {
 		return nil, errors.New("nil claim set")
 	}
 
-	var ident Identity
+	ident := Identity{Claims: claims}
 	var err error
 	var ok bool
 
